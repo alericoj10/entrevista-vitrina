@@ -1,32 +1,38 @@
-export interface Item {
+export interface Product {
   id: string;
   type: "event" | "digital_content";
   title: string;
   description: string | null;
   price: number;
   created_at: string;
+}
 
-  // Event specific
-  event_date: string | null;
-  duration: number | null;
+export interface Event {
+  id: string;
+  product_id: string;
+  event_date: string;
+  duration_minutes: number;
   capacity: number | null;
   location: string | null;
   meeting_url: string | null;
+}
 
-  // Digital content specific
+export interface DigitalContent {
+  id: string;
+  product_id: string;
+  file_name: string;
   file_url: string | null;
-  file_name: string | null;
 }
 
 export interface Purchase {
   id: string;
-  item_id: string;
+  product_id: string;
   customer_name: string;
   customer_email: string;
   original_price: number;
   final_price: number;
   discount_code: string | null;
-  payment_method: string;
+  payment_method: "card" | "bank_transfer" | "cash";
   payment_status: "pending" | "completed" | "failed";
   payment_date: string | null;
   created_at: string;
@@ -36,9 +42,12 @@ export interface DiscountCode {
   id: string;
   code: string;
   discount_percentage: number;
-  max_uses: number | null;
-  used_count: number;
-  expires_at: string | null;
   active: boolean;
   created_at: string;
+}
+
+// Combined types for UI display
+export interface ProductWithDetails extends Product {
+  event?: Event;
+  digitalContent?: DigitalContent;
 }

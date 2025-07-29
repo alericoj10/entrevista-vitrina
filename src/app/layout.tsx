@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Vitrina Professional - Encuadrado",
+  title: "La Vitrina - Encuadrado",
   description: "Plataforma para profesionales independientes",
 };
 
