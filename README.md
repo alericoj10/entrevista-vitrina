@@ -129,7 +129,7 @@ El proyecto es un monolito "modularizado", esto tiene varios beneficios:
 
 #### Notificaciones por Email
 
-Si bien era una funcionalidad deseable, me parece que pude sustituir la notificación por email con las páginas de pago exitoso y rechazado, incluyendo ahí información relevante.
+Si bien era una funcionalidad deseable, me parece que pude sustituir satisfactoriamente la notificación por email con las páginas de pago exitoso y rechazado, incluyendo ahí información relevante.
 
 #### Responsive Avanzado
 
@@ -137,11 +137,14 @@ No implementé responsive avanzado ya que el MVP requiere una experiencia simple
 
 #### Sistema de Descarga Segura de Archivos
 
-No implementé sistema de descarga segura de archivos, ya que a mi parecer dependía de las notificaciones por email y configuraciones extra de supabase con links. De todas formas la aplicación actual permite almacenar en storage de supabase los archivos y habilitar links seguros. Esto es algo que el profesional puede compartir, existiendo el flujo de pagos e inscripciones.
+No implementé sistema de descarga segura y automática de archivos, ya que a mi parecer dependía de las notificaciones por email y configuraciones extra de supabase con links. Preferí priorizar las features que realmente ayudan a los profesionales a vender contenido digital antes de optimizar la logística de entrega. De todas formas la aplicación actual permite almacenar en storage de supabase los archivos y habilitar links seguros manualmente. Esto es algo que el profesional puede compartir, existiendo el flujo de pagos e inscripciones.
 
 #### Vitrina multi-profesional
 
-Para esta ocasión, me enfoque en desarrollar el producto para solo un profesional, esto simplificó el desarrollo y permitió un MVP más rápido. Validando flujos y casos de uso clave. Igualmente la aplicación es de fácil extensión para permitir acceso independiente de profesionales y gestión de sus productos. La experiencia del usuario final sería la misma.
+Una decisión importante que tomé fue implementar la app para solo un profesional. Esto me permitió validar el caso de uso core sin mayores distracciones. Inicié con una solución que no escala perfectamente para varios usuarios, pero que permitiría validar rápidamente el producto con un usuario beta.
+Desde la ingeniería, evité la complejidad en esto para concentrarme en que el core (crear evento/contenido → vender → cobrar) funcione bien.
+Y arquitectónicamente, está listo para evolucionar - el código es fácil de extender para permitir multiples usuarios, escalar a multi-tenant es un refactor directo, no una reescritura completa.
+La experiencia del usuario final sería la misma.
 
 ## Métricas y Analytics
 
