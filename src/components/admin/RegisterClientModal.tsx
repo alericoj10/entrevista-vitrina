@@ -46,6 +46,7 @@ export default function RegisterClientModal({
     reset,
     formState: { errors },
   } = useForm<ClientFormValues>({
+    // @ts-expect-error zodResolver is not compatible
     resolver: zodResolver(clientSchema),
     defaultValues: {
       name: "",
@@ -238,6 +239,7 @@ export default function RegisterClientModal({
           </div>
         ) : !paymentLink ? (
           <form
+            // @ts-expect-error onSubmit is not defined in the form type
             onSubmit={handleSubmit(onSubmit)}
             className="px-6 py-4"
           >

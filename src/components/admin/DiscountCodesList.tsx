@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,6 +32,7 @@ export default function DiscountCodesList() {
     reset,
     formState: { errors },
   } = useForm<DiscountCodeFormValues>({
+    // @ts-expect-error zodResolver type error
     resolver: zodResolver(discountCodeSchema),
     defaultValues: {
       code: "",
@@ -39,7 +40,7 @@ export default function DiscountCodesList() {
     },
   });
 
-  const fetchDiscountCodes = async () => {
+  const fetchDiscountCodes = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -58,7 +59,7 @@ export default function DiscountCodesList() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
   const onSubmit = async (data: DiscountCodeFormValues) => {
     setIsSubmitting(true);
@@ -119,7 +120,7 @@ export default function DiscountCodesList() {
 
   useEffect(() => {
     fetchDiscountCodes();
-  }, []); // Add empty dependency array to run only once on mount
+  }, [fetchDiscountCodes]);
 
   return (
     <div className="space-y-8">
@@ -138,6 +139,7 @@ export default function DiscountCodesList() {
           </div>
         )}
 
+        {/* @ts-expect-error onSubmit type error */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

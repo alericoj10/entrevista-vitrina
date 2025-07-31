@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Purchase, Product } from "@/types/database";
 import { format } from "date-fns";
@@ -15,7 +15,7 @@ export default function PurchasesList() {
   const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
-  const fetchPurchases = async () => {
+  const fetchPurchases = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -37,11 +37,11 @@ export default function PurchasesList() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchPurchases();
-  }, []); // Add empty dependency array to run only once on mount
+  }, [fetchPurchases]);
 
   if (isLoading) {
     return (

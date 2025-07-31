@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Purchase, Product } from "@/types/database";
 import { format } from "date-fns";
@@ -25,7 +25,7 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const supabase = createClient();
 
-  const fetchPurchases = async () => {
+  const fetchPurchases = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -67,11 +67,11 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [productId, supabase]);
 
   useEffect(() => {
     fetchPurchases();
-  }, [productId]); // Fetch purchases when productId changes
+  }, [fetchPurchases, productId]);
 
   if (isLoading) {
     return (

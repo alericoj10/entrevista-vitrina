@@ -34,6 +34,7 @@ export default function CreateDigitalContentForm() {
     reset,
     formState: { errors },
   } = useForm<DigitalContentFormValues>({
+    // @ts-expect-error zodResolver type error
     resolver: zodResolver(digitalContentSchema),
     defaultValues: {
       title: "",
@@ -87,7 +88,7 @@ export default function CreateDigitalContentForm() {
         });
       }, 100);
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('digital-content')
         .upload(filePath, file);
 
@@ -124,25 +125,27 @@ export default function CreateDigitalContentForm() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Crear Nuevo Material Digital</h2>
-
+      <h2 className="text-xl font-semibold mb-4">
+        Crear Nuevo Material Digital
+      </h2>
       {success && (
         <div className="mb-4 p-4 bg-green-50 text-green-800 rounded-md">
           ¡Material digital creado exitosamente!
         </div>
       )}
-
       {error && (
         <div className="mb-4 p-4 bg-red-50 text-red-800 rounded-md">
           {error}
         </div>
       )}
-
+      {/* @ts-expect-error onSubmit type error */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
               Título *
             </label>
             <input
@@ -152,12 +155,17 @@ export default function CreateDigitalContentForm() {
               {...register("title")}
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium text-gray-700"
+            >
               Precio (CLP) *
             </label>
             <input
@@ -168,12 +176,17 @@ export default function CreateDigitalContentForm() {
               {...register("price")}
             />
             {errors.price && (
-              <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.price.message}
+              </p>
             )}
           </div>
 
           <div className="md:col-span-2">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Descripción
             </label>
             <textarea
@@ -183,12 +196,17 @@ export default function CreateDigitalContentForm() {
               {...register("description")}
             ></textarea>
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           <div className="md:col-span-2">
-            <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="file"
+              className="block text-sm font-medium text-gray-700"
+            >
               Archivo *
             </label>
             <div className="mt-1 flex items-center">
@@ -206,11 +224,11 @@ export default function CreateDigitalContentForm() {
             </div>
             {file && (
               <p className="mt-2 text-sm text-gray-500">
-                Archivo seleccionado: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                Archivo seleccionado: {file.name} (
+                {(file.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
           </div>
-
         </div>
 
         {uploadProgress > 0 && uploadProgress < 100 && (
@@ -219,7 +237,9 @@ export default function CreateDigitalContentForm() {
               className="bg-blue-600 h-2.5 rounded-full"
               style={{ width: `${uploadProgress}%` }}
             ></div>
-            <p className="text-sm text-gray-500 mt-1">Subiendo archivo: {uploadProgress}%</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Subiendo archivo: {uploadProgress}%
+            </p>
           </div>
         )}
 

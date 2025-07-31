@@ -64,7 +64,7 @@ export default function ProductSidebar({
     };
 
     checkCapacity();
-  }, [product.id, product.type, eventCapacity]);
+  }, [product.id, product.type, eventCapacity, supabase]);
 
   return (
     <div className="bg-gray-50 p-6 rounded-lg shadow-sm">

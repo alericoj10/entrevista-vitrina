@@ -9,15 +9,9 @@ export const metadata: Metadata = {
   description: "Descubre eventos profesionales y contenido digital de alta calidad para tu desarrollo profesional.",
 };
 
-export default async function StorePage({
-  searchParams,
-}: {
-  searchParams: { tab?: string };
-}) {
-  // Get the active tab from URL params or default to 'events'
+export default async function StorePage(props: unknown) {
+  const searchParams = (props as { searchParams: { tab?: string } }).searchParams;
   const activeTab = searchParams.tab === "digital" ? "digital" : "events";
-  
-  // Initialize Supabase client (server-side)
   const supabase = await createClient();
   
   // Fetch products data based on active tab

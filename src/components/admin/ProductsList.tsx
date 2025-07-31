@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Product, Event, DigitalContent, ProductWithDetails } from "@/types/database";
 import { format } from "date-fns";
@@ -16,7 +16,7 @@ export default function ProductsList() {
   const [viewingPurchases, setViewingPurchases] = useState<string | null>(null);
   const supabase = createClient();
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -58,7 +58,7 @@ export default function ProductsList() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de que deseas eliminar este producto?")) {
@@ -82,7 +82,7 @@ export default function ProductsList() {
 
   useEffect(() => {
     fetchProducts();
-  }, []); // Add empty dependency array to run only once on mount
+  }, [fetchProducts]);
 
   if (isLoading) {
     return (

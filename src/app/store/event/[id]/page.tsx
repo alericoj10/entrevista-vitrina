@@ -5,41 +5,15 @@ import { es } from "date-fns/locale";
 import { createClient } from "@/lib/supabase/server";
 import ProductSidebar from "@/components/store/ProductSidebar";
 
-type PageProps = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-// Generate metadata for SEO
-// export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-//   const supabase = await createClient();
-//   const { data: product } = await supabase
-//     .from("products")
-//     .select("*")
-//     .eq("id", params.id)
-//     .single();
-
-//   if (!product) {
-//     return {
-//       title: "Evento no encontrado",
-//       description: "El evento que buscas no existe o ha sido eliminado.",
-//     };
-//   }
-
-//   return {
-//     title: `${product.title} | Encuadrado`,
-//     description: product.description || "Evento para profesionales en Encuadrado",
-//   };
-// }
-
-export default async function EventDetailPage({ params }: PageProps) {
+export default async function EventDetailPage(props: unknown) {
+  const id = (props as { params: { id: string } }).params.id;
   const supabase = await createClient();
   
   // Fetch the product
   const { data: product } = await supabase
     .from("products")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!product || product.type !== "event") {

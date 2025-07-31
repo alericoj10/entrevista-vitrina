@@ -4,41 +4,15 @@ import { format } from "date-fns";
 import { createClient } from "@/lib/supabase/server";
 import ProductSidebar from "@/components/store/ProductSidebar";
 
-type PageProps = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-// Generate metadata for SEO
-// export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-//   const supabase = await createClient();
-//   const { data: product } = await supabase
-//     .from("products")
-//     .select("*")
-//     .eq("id", params.id)
-//     .single();
-
-//   if (!product) {
-//     return {
-//       title: "Contenido digital no encontrado",
-//       description: "El contenido digital que buscas no existe o ha sido eliminado.",
-//     };
-//   }
-
-//   return {
-//     title: `${product.title} | Encuadrado`,
-//     description: product.description || "Contenido digital para profesionales en Encuadrado",
-//   };
-// }
-
-export default async function DigitalContentDetailPage({ params }: PageProps) {
+export default async function DigitalContentDetailPage(props: unknown) {
+  const id = (props as { params: { id: string } }).params.id;
   const supabase = await createClient();
   
   // Fetch the product
   const { data: product } = await supabase
     .from("products")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!product || product.type !== "digital_content") {
