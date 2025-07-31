@@ -6,7 +6,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Purchase, Product } from "@/types/database";
 
-// Extended interface for digital content with download URL
 interface DigitalContent {
   id: string;
   product_id: string;
@@ -14,14 +13,13 @@ interface DigitalContent {
   file_name: string;
 }
 
-// Extended interface for product with its relationships
 interface ExtendedPurchase extends Purchase {
   product: Product & {
     digital_contents?: DigitalContent[];
   };
+  digitalContent?: DigitalContent;
 }
 
-// Loading fallback component
 function PaymentSuccessLoading() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
@@ -31,7 +29,6 @@ function PaymentSuccessLoading() {
   );
 }
 
-// Main content component that uses useSearchParams
 function PaymentSuccessContent() {
   const [purchase, setPurchase] = useState<ExtendedPurchase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,23 +42,41 @@ function PaymentSuccessContent() {
       if (!purchaseId) return;
 
       const supabase = createClient();
-      const { data, error } = await supabase
+
+      const { data: purchaseData, error: purchaseError } = await supabase
         .from("purchases")
         .select(`
           *,
-          product:product_id (
-            *,
-            digital_contents (*)
-          )
+          product:product_id (*)
         `)
         .eq("id", purchaseId)
         .single();
 
-      if (error) {
-        console.error("Error fetching purchase details:", error);
-      } else {
-        setPurchase(data as ExtendedPurchase);
+      if (purchaseError) {
+        console.error("Error fetching purchase details:", purchaseError);
+        setIsLoading(false);
+        return;
       }
+
+      let digitalContent = null;
+      if (purchaseData?.product?.type === "digital_content") {
+        const { data: digitalContentData, error: digitalContentError } = await supabase
+          .from("digital_contents")
+          .select("*")
+          .eq("product_id", purchaseData.product.id)
+          .single();
+
+        if (digitalContentError) {
+          console.error("Error fetching digital content:", digitalContentError);
+        } else {
+          digitalContent = digitalContentData;
+        }
+      }
+
+      setPurchase({
+        ...purchaseData,
+        digitalContent
+      } as ExtendedPurchase);
       
       setIsLoading(false);
     }
@@ -69,9 +84,8 @@ function PaymentSuccessContent() {
     fetchPurchaseDetails();
   }, [purchaseId]);
 
-  // Function to handle file download for digital content
   const handleDownload = async () => {
-    if (!purchase?.product?.digital_contents?.[0]?.file_url) {
+    if (!purchase?.digitalContent?.file_url) {
       setDownloadError("No se encontró el archivo para descargar.");
       return;
     }
@@ -81,12 +95,9 @@ function PaymentSuccessContent() {
 
     try {
       const supabase = createClient();
-      const fileUrl = purchase.product.digital_contents[0].file_url;
-      const fileName = purchase.product.digital_contents[0].file_name || 'download';
-      
-      // Extract file path from the public URL
-      // The fileUrl looks like: https://xxx.supabase.co/storage/v1/object/public/digital-content/filename
-      // We need to extract just the filename part
+      const fileUrl = purchase.digitalContent.file_url;
+      const fileName = purchase.digitalContent.file_name || 'download';
+
       const filePath = fileUrl.split('/').pop() || '';
       
       console.log("Attempting to download file:", filePath, "from bucket: digital-content");
@@ -101,7 +112,6 @@ function PaymentSuccessContent() {
         throw error;
       }
 
-      // Create download link and trigger download
       const url = URL.createObjectURL(data);
       const a = document.createElement('a');
       a.href = url;
@@ -131,7 +141,7 @@ function PaymentSuccessContent() {
 
   const isDigitalContent = purchase?.product?.type === "digital_content";
   const isEvent = purchase?.product?.type === "event";
-  const hasDigitalContent = isDigitalContent && purchase?.product?.digital_contents && purchase.product.digital_contents.length > 0;
+  const hasDigitalContent = isDigitalContent && purchase?.digitalContent;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center">
@@ -235,7 +245,6 @@ function PaymentSuccessContent() {
                   </p>
                 </div>
 
-                {/* Digital Content Download Section */}
                 {hasDigitalContent && (
                   <div className="mt-8 border-t border-gray-200 pt-6">
                     <div className="rounded-md bg-blue-50 p-4">
@@ -264,9 +273,7 @@ function PaymentSuccessContent() {
                               botón a continuación.
                             </p>
                             <p className="font-semibold mt-1">
-                              {purchase.product.digital_contents &&
-                                purchase.product.digital_contents[0] &&
-                                purchase.product.digital_contents[0].file_name}
+                              {purchase.digitalContent?.file_name}
                             </p>
                           </div>
                           <div className="mt-4">
@@ -331,7 +338,6 @@ function PaymentSuccessContent() {
                   </div>
                 )}
 
-                {/* Event Information Section */}
                 {isEvent && (
                   <div className="mt-8 border-t border-gray-200 pt-6">
                     <div className="rounded-md bg-blue-50 p-4">
@@ -395,7 +401,6 @@ function PaymentSuccessContent() {
   );
 }
 
-// Main component that wraps the content in a Suspense boundary
 export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={<PaymentSuccessLoading />}>

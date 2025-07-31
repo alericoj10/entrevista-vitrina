@@ -6,7 +6,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Purchase } from "@/types/database";
 
-// Loading fallback component
 function PaymentFailedLoading() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
@@ -16,7 +15,6 @@ function PaymentFailedLoading() {
   );
 }
 
-// Main content component that uses useSearchParams
 function PaymentFailedContent() {
   const [purchase, setPurchase] = useState<Purchase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -146,7 +144,6 @@ function PaymentFailedContent() {
   );
 }
 
-// Main component that wraps the content in a Suspense boundary
 export default function PaymentFailedPage() {
   return (
     <Suspense fallback={<PaymentFailedLoading />}>

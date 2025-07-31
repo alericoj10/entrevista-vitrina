@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
 
-// Form validation schema
 const paymentFormSchema = z.object({
   name: z.string().min(3, "Nombre completo debe tener al menos 3 caracteres"),
   email: z.string().email("Correo electrónico inválido"),
@@ -22,7 +21,6 @@ const paymentFormSchema = z.object({
 
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
-// Loading fallback component
 function PaymentPageLoading() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -31,14 +29,12 @@ function PaymentPageLoading() {
   );
 }
 
-// Main payment page content that uses search params
 function PaymentPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [paymentMethod, setPaymentMethod] = useState<"card" | "other" | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Get product info from URL params
   const productId = searchParams.get("productId") || "";
   const productType = searchParams.get("productType") || "";
   const originalPrice = parseFloat(searchParams.get("originalPrice") || "0");
@@ -47,10 +43,8 @@ function PaymentPageContent() {
     : null;
   const discountCode = searchParams.get("discountCode") || null;
 
-  // Determine final price
   const finalPrice = discountedPrice !== null ? discountedPrice : originalPrice;
 
-  // Initialize form with react-hook-form
   const {
     register,
     handleSubmit,
@@ -68,7 +62,6 @@ function PaymentPageContent() {
     },
   });
 
-  // If product info is missing, redirect to store
   useEffect(() => {
     if (!productId || !productType) {
       router.push("/store");
@@ -79,10 +72,8 @@ function PaymentPageContent() {
     setIsProcessing(true);
 
     try {
-      // Create a new purchase record
       const supabase = createClient();
 
-      // Create initial purchase record with pending status
       const { data: purchase, error: purchaseError } = await supabase
         .from("purchases")
         .insert({
@@ -108,7 +99,6 @@ function PaymentPageContent() {
 
       // Determine payment result based on the rules
       let paymentSuccessful = true;
-
       if (paymentMethod === "card") {
         // If last digit of the final price is 8 or 9, payment fails
         const priceString = finalPrice.toFixed(0);
@@ -119,7 +109,6 @@ function PaymentPageContent() {
         }
       }
 
-      // Update purchase record with final status
       const { error: updateError } = await supabase
         .from("purchases")
         .update({
@@ -132,7 +121,6 @@ function PaymentPageContent() {
         console.error("Error updating purchase:", updateError);
       }
 
-      // Redirect to success or failure page
       if (paymentSuccessful) {
         router.push(`/payment/success?purchaseId=${purchase.id}`);
       } else {
@@ -165,7 +153,6 @@ function PaymentPageContent() {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          {/* Order summary */}
           <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               Resumen de la orden
@@ -208,7 +195,6 @@ function PaymentPageContent() {
             </dl>
           </div>
 
-          {/* Payment method selection */}
           <div className="px-4 py-5 sm:px-6 border-t border-b border-gray-200">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               Método de pago
@@ -249,7 +235,6 @@ function PaymentPageContent() {
             </div>
           </div>
 
-          {/* Payment form */}
           <form onSubmit={handleSubmit(processPayment)}>
             <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
               <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
@@ -345,7 +330,6 @@ function PaymentPageContent() {
                 </div>
               </div>
 
-              {/* Card payment fields */}
               {paymentMethod === "card" && (
                 <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
                   <div className="sm:col-span-3">
@@ -416,7 +400,6 @@ function PaymentPageContent() {
               )}
             </div>
 
-            {/* Form submission */}
             <div className="px-4 py-5 sm:px-6">
               <button
                 type="submit"
@@ -467,7 +450,6 @@ function PaymentPageContent() {
   );
 }
 
-// Main component that wraps the content in a Suspense boundary
 export default function PaymentPage() {
   return (
     <Suspense fallback={<PaymentPageLoading />}>
