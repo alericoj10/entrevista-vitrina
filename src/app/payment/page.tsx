@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,17 @@ const paymentFormSchema = z.object({
 
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
-export default function PaymentPage() {
+// Loading fallback component
+function PaymentPageLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+}
+
+// Main payment page content that uses search params
+function PaymentPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [paymentMethod, setPaymentMethod] = useState<"card" | "other" | null>(null);
@@ -122,7 +132,7 @@ export default function PaymentPage() {
         console.error("Error updating purchase:", updateError);
       }
 
-      // Redirect based on payment result
+      // Redirect to success or failure page
       if (paymentSuccessful) {
         router.push(`/payment/success?purchaseId=${purchase.id}`);
       } else {
@@ -130,7 +140,8 @@ export default function PaymentPage() {
       }
     } catch (error) {
       console.error("Payment processing error:", error);
-      router.push("/payment/failed");
+      alert("Error al procesar el pago. Por favor, intenta nuevamente.");
+      setIsProcessing(false);
     }
   };
 
@@ -138,30 +149,13 @@ export default function PaymentPage() {
     setPaymentMethod(method);
   };
 
-  if (!productId || !productType) {
-    return <div>Redirecting...</div>;
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/store"
-            className="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center"
-          >
-            <svg
-              className="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
+          <Link href="/store" className="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center">
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Volver a la tienda
           </Link>
@@ -171,74 +165,97 @@ export default function PaymentPage() {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-lg leading-6 font-medium text-gray-900">
-              Detalles de pago
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Completa la información para realizar tu compra
-            </p>
-          </div>
-
           {/* Order summary */}
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+          <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               Resumen de la orden
             </h3>
-            <div className="mt-2 grid grid-cols-1 gap-y-2 text-sm">
-              <div className="flex justify-between">
-                <p className="text-gray-500">Tipo de producto</p>
-                <p className="font-medium text-gray-900">
-                  {productType === "event" ? "Evento" : "Contenido Digital"}
-                </p>
+          </div>
+          <div className="px-4 py-5 sm:p-6">
+            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+              <div className="sm:col-span-1">
+                <dt className="text-sm font-medium text-gray-500">Producto</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {productType === "event" ? "Evento" : "Material Digital"}
+                </dd>
               </div>
-
-              <div className="flex justify-between">
-                <p className="text-gray-500">ID del producto</p>
-                <p className="font-medium text-gray-900">{productId}</p>
+              <div className="sm:col-span-1">
+                <dt className="text-sm font-medium text-gray-500">Precio original</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  ${originalPrice.toLocaleString("es-CL")}
+                </dd>
               </div>
-
-              <div className="flex justify-between">
-                <p className="text-gray-500">Precio original</p>
-                <p className="font-medium text-gray-900">
-                  {new Intl.NumberFormat("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  }).format(originalPrice)}
-                </p>
-              </div>
-
               {discountCode && (
-                <div className="flex justify-between">
-                  <p className="text-gray-500">Código de descuento</p>
-                  <p className="font-medium text-green-600">{discountCode}</p>
-                </div>
+                <>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-medium text-gray-500">Código de descuento</dt>
+                    <dd className="mt-1 text-sm text-gray-900">{discountCode}</dd>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-medium text-gray-500">Precio con descuento</dt>
+                    <dd className="mt-1 text-sm text-gray-900">
+                      ${discountedPrice?.toLocaleString("es-CL")}
+                    </dd>
+                  </div>
+                </>
               )}
+              <div className="sm:col-span-2">
+                <dt className="text-sm font-medium text-gray-500">Total a pagar</dt>
+                <dd className="mt-1 text-lg font-semibold text-gray-900">
+                  ${finalPrice.toLocaleString("es-CL")}
+                </dd>
+              </div>
+            </dl>
+          </div>
 
-              <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                <p className="text-gray-900 font-bold">Total a pagar</p>
-                <p
-                  className={`font-bold ${
-                    discountCode ? "text-green-600" : "text-gray-900"
-                  }`}
+          {/* Payment method selection */}
+          <div className="px-4 py-5 sm:px-6 border-t border-b border-gray-200">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Método de pago
+            </h3>
+            <div className="mt-4 space-y-4">
+              <div className="flex items-center">
+                <input
+                  id="payment-card"
+                  name="payment-method"
+                  type="radio"
+                  checked={paymentMethod === "card"}
+                  onChange={() => handlePaymentMethodSelect("card")}
+                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <label
+                  htmlFor="payment-card"
+                  className="ml-3 block text-sm font-medium text-gray-700"
                 >
-                  {new Intl.NumberFormat("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  }).format(finalPrice)}
-                </p>
+                  Tarjeta de crédito o débito
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="payment-other"
+                  name="payment-method"
+                  type="radio"
+                  checked={paymentMethod === "other"}
+                  onChange={() => handlePaymentMethodSelect("other")}
+                  className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <label
+                  htmlFor="payment-other"
+                  className="ml-3 block text-sm font-medium text-gray-700"
+                >
+                  Transferencia bancaria
+                </label>
               </div>
             </div>
           </div>
 
           {/* Payment form */}
-          <form onSubmit={handleSubmit(processPayment)} className="border-t border-gray-200">
-            {/* Customer information */}
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Información del comprador
+          <form onSubmit={handleSubmit(processPayment)}>
+            <div className="px-4 py-5 sm:p-6 border-b border-gray-200">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                Información de contacto
               </h3>
-              <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label
                     htmlFor="name"
@@ -251,9 +268,7 @@ export default function PaymentPage() {
                       type="text"
                       id="name"
                       {...register("name")}
-                      className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.name ? "border-red-300" : ""
-                      }`}
+                      className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                     {errors.name && (
                       <p className="mt-1 text-sm text-red-600">
@@ -275,9 +290,7 @@ export default function PaymentPage() {
                       type="email"
                       id="email"
                       {...register("email")}
-                      className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.email ? "border-red-300" : ""
-                      }`}
+                      className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-600">
@@ -299,9 +312,7 @@ export default function PaymentPage() {
                       type="tel"
                       id="phone"
                       {...register("phone")}
-                      className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.phone ? "border-red-300" : ""
-                      }`}
+                      className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                     {errors.phone && (
                       <p className="mt-1 text-sm text-red-600">
@@ -323,9 +334,7 @@ export default function PaymentPage() {
                       type="text"
                       id="address"
                       {...register("address")}
-                      className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.address ? "border-red-300" : ""
-                      }`}
+                      className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                     {errors.address && (
                       <p className="mt-1 text-sm text-red-600">
@@ -335,53 +344,11 @@ export default function PaymentPage() {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Payment method selection */}
-            <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Método de pago
-              </h3>
-              <div className="mt-4 space-y-4">
-                <div className="flex items-center">
-                  <input
-                    id="payment-card"
-                    name="payment-method"
-                    type="radio"
-                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                    onChange={() => handlePaymentMethodSelect("card")}
-                    checked={paymentMethod === "card"}
-                  />
-                  <label
-                    htmlFor="payment-card"
-                    className="ml-3 block text-sm font-medium text-gray-700"
-                  >
-                    Tarjeta de crédito/débito
-                  </label>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="payment-other"
-                    name="payment-method"
-                    type="radio"
-                    className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                    onChange={() => handlePaymentMethodSelect("other")}
-                    checked={paymentMethod === "other"}
-                  />
-                  <label
-                    htmlFor="payment-other"
-                    className="ml-3 block text-sm font-medium text-gray-700"
-                  >
-                    Transferencia bancaria
-                  </label>
-                </div>
-              </div>
-
-              {/* Card details section - only visible when card payment is selected */}
+              {/* Card payment fields */}
               {paymentMethod === "card" && (
-                <div className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-                  <div className="sm:col-span-2">
+                <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                  <div className="sm:col-span-3">
                     <label
                       htmlFor="card-number"
                       className="block text-sm font-medium text-gray-700"
@@ -497,5 +464,14 @@ export default function PaymentPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// Main component that wraps the content in a Suspense boundary
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<PaymentPageLoading />}>
+      <PaymentPageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -21,7 +21,18 @@ interface ExtendedPurchase extends Purchase {
   };
 }
 
-export default function PaymentSuccessPage() {
+// Loading fallback component
+function PaymentSuccessLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p className="mt-3 text-gray-600">Cargando detalles de la compra...</p>
+    </div>
+  );
+}
+
+// Main content component that uses useSearchParams
+function PaymentSuccessContent() {
   const [purchase, setPurchase] = useState<ExtendedPurchase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -381,5 +392,14 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main component that wraps the content in a Suspense boundary
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<PaymentSuccessLoading />}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

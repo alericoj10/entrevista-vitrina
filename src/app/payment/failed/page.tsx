@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Purchase } from "@/types/database";
 
-export default function PaymentFailedPage() {
+// Loading fallback component
+function PaymentFailedLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p className="mt-3 text-gray-600">Cargando información...</p>
+    </div>
+  );
+}
+
+// Main content component that uses useSearchParams
+function PaymentFailedContent() {
   const [purchase, setPurchase] = useState<Purchase | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -132,5 +143,14 @@ export default function PaymentFailedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main component that wraps the content in a Suspense boundary
+export default function PaymentFailedPage() {
+  return (
+    <Suspense fallback={<PaymentFailedLoading />}>
+      <PaymentFailedContent />
+    </Suspense>
   );
 }
