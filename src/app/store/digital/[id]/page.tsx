@@ -7,8 +7,7 @@ import ProductSidebar from "@/components/store/ProductSidebar";
 export default async function DigitalContentDetailPage(props: unknown) {
   const id = (props as { params: { id: string } }).params.id;
   const supabase = await createClient();
-  
-  // Fetch the product
+
   const { data: product } = await supabase
     .from("products")
     .select("*")
@@ -19,7 +18,6 @@ export default async function DigitalContentDetailPage(props: unknown) {
     notFound();
   }
 
-  // Fetch the digital content details
   const { data: contentDetails } = await supabase
     .from("digital_contents")
     .select("*")
@@ -30,10 +28,8 @@ export default async function DigitalContentDetailPage(props: unknown) {
     notFound();
   }
 
-  // Extract file extension and determine file type
   const fileExtension = contentDetails.file_name.split('.').pop()?.toLowerCase() || '';
   
-  // Determine file type display name
   let fileTypeName = "Archivo";
   let fileTypeIcon = "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z";
   
@@ -58,7 +54,6 @@ export default async function DigitalContentDetailPage(props: unknown) {
     fileTypeIcon = "M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4";
   }
 
-  // Format date
   const formattedDate = format(new Date(product.created_at), "dd/MM/yyyy");
 
   return (
@@ -77,7 +72,6 @@ export default async function DigitalContentDetailPage(props: unknown) {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="bg-white overflow-hidden shadow sm:rounded-lg">
-          {/* Content header with type badge */}
           <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {fileTypeName}
@@ -88,11 +82,8 @@ export default async function DigitalContentDetailPage(props: unknown) {
             </span>
           </div>
           
-          {/* Content body */}
           <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Main content - 2/3 width */}
             <div className="md:col-span-2 space-y-6">
-              {/* Description */}
               <div>
                 <h2 className="text-lg font-medium text-gray-900">Descripción</h2>
                 <div className="mt-3 prose prose-blue max-w-none">
@@ -102,7 +93,6 @@ export default async function DigitalContentDetailPage(props: unknown) {
                 </div>
               </div>
               
-              {/* File details */}
               <div>
                 <h2 className="text-lg font-medium text-gray-900">Detalles del archivo</h2>
                 <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -138,7 +128,6 @@ export default async function DigitalContentDetailPage(props: unknown) {
               </div>
             </div>
             
-            {/* Sidebar - 1/3 width */}
             <div className="md:col-span-1">
               <ProductSidebar product={product} />
             </div>

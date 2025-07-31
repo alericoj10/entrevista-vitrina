@@ -13,8 +13,7 @@ export default async function StorePage(props: unknown) {
   const searchParams = (props as { searchParams: { tab?: string } }).searchParams;
   const activeTab = searchParams.tab === "digital" ? "digital" : "events";
   const supabase = await createClient();
-  
-  // Fetch products data based on active tab
+
   let events = [];
   let digitalContents = [];
   
@@ -25,17 +24,14 @@ export default async function StorePage(props: unknown) {
     .order("created_at", { ascending: false });
   
   if (productsData) {
-    // Fetch events details
     const { data: eventsData } = await supabase
       .from("events")
       .select("*");
       
-    // Fetch digital content details
     const { data: digitalData } = await supabase
       .from("digital_contents")
       .select("*");
     
-    // Combine products with their details
     events = productsData
       .filter(product => product.type === "event")
       .map(product => {
@@ -67,10 +63,8 @@ export default async function StorePage(props: unknown) {
       </header>
       
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Tab Navigation */}
         <StoreNavigation activeTab={activeTab} />
         
-        {/* Tab Content */}
         <div className="mt-6">
           {activeTab === "events" && (
             <EventsGrid events={events} />

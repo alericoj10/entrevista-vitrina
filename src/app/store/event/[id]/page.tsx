@@ -9,7 +9,6 @@ export default async function EventDetailPage(props: unknown) {
   const id = (props as { params: { id: string } }).params.id;
   const supabase = await createClient();
   
-  // Fetch the product
   const { data: product } = await supabase
     .from("products")
     .select("*")
@@ -20,7 +19,6 @@ export default async function EventDetailPage(props: unknown) {
     notFound();
   }
 
-  // Fetch the event details
   const { data: eventDetails } = await supabase
     .from("events")
     .select("*")
@@ -34,7 +32,6 @@ export default async function EventDetailPage(props: unknown) {
   const eventDate = new Date(eventDetails.event_date);
   const isUpcoming = new Date() < eventDate;
   
-  // Format date and time
   const formattedDate = format(eventDate, "EEEE d 'de' MMMM 'de' yyyy", { locale: es });
   const formattedTime = format(eventDate, "HH:mm", { locale: es });
 
@@ -54,7 +51,6 @@ export default async function EventDetailPage(props: unknown) {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="bg-white overflow-hidden shadow sm:rounded-lg">
-          {/* Event header with status badge */}
           <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
             <span
               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -71,11 +67,8 @@ export default async function EventDetailPage(props: unknown) {
             </span>
           </div>
           
-          {/* Event content */}
           <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Main content - 2/3 width */}
             <div className="md:col-span-2 space-y-6">
-              {/* Description */}
               <div>
                 <h2 className="text-lg font-medium text-gray-900">Descripción</h2>
                 <div className="mt-3 prose prose-blue max-w-none">
@@ -85,7 +78,6 @@ export default async function EventDetailPage(props: unknown) {
                 </div>
               </div>
               
-              {/* Details */}
               <div>
                 <h2 className="text-lg font-medium text-gray-900">Detalles del evento</h2>
                 <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -111,7 +103,6 @@ export default async function EventDetailPage(props: unknown) {
                     </div>
                   )}
                   
-                  {/* Hide exact location - only show whether it's online or in-person */}
                   <div className="sm:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">Tipo de evento</dt>
                     <dd className="mt-1 text-sm text-gray-900 flex items-center">
@@ -135,7 +126,6 @@ export default async function EventDetailPage(props: unknown) {
                     </dd>
                   </div>
                   
-                  {/* Information available only after purchase message */}
                   <div className="sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
                     <div className="bg-yellow-50 p-4 rounded-md">
                       <div className="flex">
@@ -160,7 +150,6 @@ export default async function EventDetailPage(props: unknown) {
               </div>
             </div>
             
-            {/* Sidebar - 1/3 width */}
             <div className="md:col-span-1">
               <ProductSidebar 
                 product={product} 
