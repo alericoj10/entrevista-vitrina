@@ -10,30 +10,18 @@ import { Event, Product } from "@/types/database";
 const eventSchema = z.object({
   title: z.string().min(3, "El título debe tener al menos 3 caracteres"),
   description: z.string().optional(),
-  price: z
-    .string()
-    .min(1, "El precio es obligatorio")
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val >= 0, {
-      message: "El precio no puede ser negativo",
-    }),
+  price: z.coerce.number().min(0, "El precio no puede ser negativo"),
   event_date: z.string().min(1, "La fecha del evento es obligatoria"),
-  duration_minutes: z
-    .string()
-    .min(1, "La duración es obligatoria")
-    .transform((val) => Number(val))
-    .refine((val) => !isNaN(val) && val > 0, {
-      message: "La duración debe ser mayor a 0",
-    }),
-  capacity: z
-    .string()
-    .optional()
-    .transform((val) => (val ? Number(val) : undefined))
-    .refine((val) => val === undefined || (!isNaN(val) && val > 0), {
-      message: "La capacidad debe ser mayor a 0",
-    }),
-  location: z.string().optional(),
-  meeting_url: z.string().url("Ingresa una URL válida").optional(),
+  duration_minutes: z.coerce.number().min(1, "La duración debe ser mayor a 0"),
+  capacity: z.preprocess(
+    (val) => val === "" ? undefined : Number(val),
+    z.number().min(1, "La capacidad debe ser mayor a 0").optional().nullable()
+  ),
+  location: z.string().optional().nullable(),
+  meeting_url: z.preprocess(
+    (val) => val === "" ? undefined : val,
+    z.string().url("Ingresa una URL válida").optional().nullable()
+  ),
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
@@ -61,10 +49,10 @@ export default function EditEventForm({
     defaultValues: {
       title: product.title,
       description: product.description || "",
-      price: Number(product.price),
+      price: product.price,
       event_date: event.event_date.slice(0, 16), // for datetime-local input
-      duration_minutes: Number(event.duration_minutes),
-      capacity: Number(event.capacity) ?? undefined,
+      duration_minutes: event.duration_minutes,
+      capacity: event.capacity || undefined,
       location: event.location || "",
       meeting_url: event.meeting_url || "",
     },
