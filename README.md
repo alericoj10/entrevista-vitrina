@@ -2,7 +2,15 @@
 
 Postulante: Alejandro Rico
 
-## 🚀 Quick Start
+## 📚 Tabla de contenidos
+
+- [## Quick Start](#quick-start)
+- [## Justificación de Decisiones Técnicas](#justificación-de-decisiones-técnicas)
+- [## Funcionalidades Implementadas](#funcionalidades-implementadas)
+- [## Métricas y Analytics](#métricas-y-analytics)
+- [## Posibles Próximos Pasos Desde Aquí](#posibles-próximos-pasos-desde-aquí)
+
+## Quick Start
 
 El proyecto ya se encuentra deployeado en este link: [entrevista-vitrina](https://entrevista-vitrina.vercel.app/), por lo que se facilita la revisión. Si igualmente se quisiera ejecutar el proyecto localmente, se pueden seguir los siguientes pasos:
 
@@ -58,11 +66,11 @@ yarn dev
 - Usuario: `encuadrado`
 - Contraseña: `enc123**456&789`
 
-### Justificación de Decisiones Técnicas
+## Justificación de Decisiones Técnicas
 
-#### 1. Stack
+### 1. Stack
 
-##### 1.1 Next.js + Tailwind CSS + Typescript Frontend (SPA + SSR)
+#### 1.1 Next.js + Tailwind CSS + Typescript Frontend (SPA + SSR)
 
 Elegí usar React con Typescript como principales tecnologías de frontend, ya que:
 
@@ -73,14 +81,14 @@ Elegí usar React con Typescript como principales tecnologías de frontend, ya q
 - Typescript para incluir seguridad en el tipado del código, puede ayudar a prevenir errores sobretodo cuando se desarrolla rápido y el entorno exige rapidez.
 - Son tecnologías que ya utilizan en Encuadrado y he usado en proyectos anteriores.
 
-##### 1.2 Supabase Backend (SQL)
+#### 1.2 Supabase Backend (SQL)
 
 - Decidí usar base de datos SQL ya que por la naturaleza del producto, existen entidades de datos que requieren ser relacionadas entre si y ayuda a mantener estructuras predeterminadas aún con posibilidad de flexibilidad.
 - Otras razones de usar SQL: El e-commerce requiere consistencia ACID para transacciones de pagos e inventario, facilidad de hacer queries complejas de analytics y permiten diseñar el schema pensando en escalabilidad futura con índices y relaciones optimizadas.
 - Supabase es una excelente tecnología de backend como servicio, que permite levantar un backend completo y robusto en poco tiempo: Incluye autenticación, base de datos, storage, funciones, webhooks, etc.
 - Escala super bien y facilita la posterior migración a una app in-house de backend de ser necesario.
 
-#### 2. Estructura del Proyecto
+### 2. Estructura del Proyecto
 
 El proyecto es un monolito "modularizado", esto tiene varios beneficios:
 
@@ -135,7 +143,7 @@ No implementé sistema de descarga segura de archivos, ya que a mi parecer depen
 
 Para esta ocasión, me enfoque en desarrollar el producto para solo un profesional, esto simplificó el desarrollo y permitió un MVP más rápido. Validando flujos y casos de uso clave. Igualmente la aplicación es de fácil extensión para permitir acceso independiente de profesionales y gestión de sus productos. La experiencia del usuario final sería la misma.
 
-## 📈 Métricas y Analytics
+## Métricas y Analytics
 
 Si esto fuera producción, implementaría en el panel de admin un dashboard con tracking de:
 
@@ -153,7 +161,7 @@ Además se podría incluir monitoreo y observabilidad de:
 - Errores en flujo de pagos
 - Errores en panel de admin
 
-## 🔮 Posibles Próximos Pasos Desde Aquí
+## Posibles Próximos Pasos Desde Aquí
 
 ### Fase 2 - Funcionalidades
 
