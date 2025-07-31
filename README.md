@@ -106,28 +106,31 @@ El proyecto es un monolito "modularizado", esto tiene varios beneficios:
 - **Flujo de Pago**: Simulación realista de pasarela de pago
 - **Lógica de Aprobación**: Basada en último dígito del precio
 - **Vistas de Confirmación**: Pago exitoso y pago rechazado
-- **Gestión de Stock**: Control de cupos en tiempo real
 
 ### 🌟 Funcionalidades Adicionales Implementadas
 
-- **[Característica 1]**: [Descripción y justificación]
-- **[Característica 2]**: [Descripción y justificación]
-- **Validaciones Avanzadas**: [Detalles de validaciones implementadas]
+- Si un evento ya no está vigente (ya sea porque no hay más cupos o porque ya pasó la fecha del evento) debe mostrarse pero no clickeable (deshabilitado)
+- Agregar input para aplicar código de descuento
+- Poder crear un código de descuento aplicable al momento de pagar
+- Como profesional, poder inscribir a un asistente y que esto genere un link de pago que le permita a éste pagar en cualquier momento previo a la fecha del evento
 
 ### 🚧 Features Despriorizadas (y por qué)
 
 #### Notificaciones por Email
 
+Si bien era una funcionalidad deseable, me parece que pude sustituir la notificación por email con las páginas de pago exitoso y rechazado, incluyendo ahí información relevante.
+
 #### Responsive Avanzado
+
+No implementé responsive avanzado ya que el MVP requiere una experiencia simple y clara para el usuario final. Entendiendo que el desarrollo móvil suele ir con un equipo dedicado, distintas decisiones de diseño y UX. Mi foco no fue mobile-first sino mobile-friendly.
 
 #### Sistema de Descarga Segura de Archivos
 
-## 🎯 Supuestos Realizados
+No implementé sistema de descarga segura de archivos, ya que a mi parecer dependía de las notificaciones por email y configuraciones extra de supabase con links. De todas formas la aplicación actual permite almacenar en storage de supabase los archivos y habilitar links seguros. Esto es algo que el profesional puede compartir, existiendo el flujo de pagos e inscripciones.
 
-1. **Modelo de Negocio**: Asumí que Encuadrado toma una comisión por transacción, por lo que implementé tracking detallado de pagos
-2. **Tipos de Usuario**: Separé claramente los flujos admin vs cliente final para optimizar cada experiencia
-3. **Gestión de Archivos**: Prioricé simplicidad con storage local vs complejidad de CDN para el MVP
-4. **Flujo de Pagos**: Simulé un flujo realista que se pueda integrar fácilmente con Mercado Pago u otras pasarelas
+#### Vitrina multi-profesional
+
+Para esta ocasión, me enfoque en desarrollar el producto para solo un profesional, esto simplificó el desarrollo y permitió un MVP más rápido. Validando flujos y casos de uso clave. Igualmente la aplicación es de fácil extensión para permitir acceso independiente de profesionales y gestión de sus productos. La experiencia del usuario final sería la misma.
 
 ## 📈 Métricas y Analytics
 
@@ -143,27 +146,23 @@ Si esto fuera producción, implementaría en el panel de admin un dashboard con 
 
 Además se podría incluir monitoreo y observabilidad de:
 
-- Performance de carga de página
-- Errores en flujo de pago
+- Performance de carga de páginas
+- Errores en flujo de pagos
+- Errores en panel de admin
 
 ## 🔮 Posibles Próximos Pasos Desde Aquí
 
 ### Fase 2 - Funcionalidades
 
 - [ ] Sistema completo de notificaciones (email + SMS)
-- [ ] Analytics dashboard para profesionales
-- [ ] Sistema de reviews y ratings
-- [ ] Integración con calendar para eventos
-
-### Mejoras Técnicas
-
-- [ ] Implementar CDN para archivos estáticos
-- [ ] Cache layer (Redis) para mejor performance
-- [ ] Background jobs para procesamiento pesado
-- [ ] Monitoring y alertas
+- [ ] Sistema de descarga y habilitación de Contenidos Digitales
+- [ ] Dashboard con analytics para profesionales
+- [ ] Sistema de reviews y ratings de productos
+- [ ] Filtros y recomendaciones de productos por categoría/prefesional/ranking/etc
 
 ### Escalabilidad
 
 - [ ] Separación en microservicios cuando el volumen lo justifique
 - [ ] Database sharding por profesional
-- [ ] Rate limiting y anti-fraud
+- [ ] Idempotencia en pagos para asegurar cumplimiento de capacidad en eventos.
+- [ ] Implementar seguridad en descarga de Contenidos Digitales, tipo Gumroad para evitar fraude, plagio y copias.
