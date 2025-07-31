@@ -57,7 +57,6 @@ export default function CreateEventForm() {
     setError(null);
 
     try {
-      // First, create the product
       const { data: product, error: productError } = await supabase
         .from("products")
         .insert({
@@ -71,7 +70,6 @@ export default function CreateEventForm() {
 
       if (productError) throw productError;
 
-      // Then, create the event with the product_id
       const { error: eventError } = await supabase
         .from("events")
         .insert({

@@ -30,7 +30,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
     setError(null);
 
     try {
-      // Get the product info first
       const { data: productData, error: productError } = await supabase
         .from("products")
         .select("*")
@@ -40,7 +39,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
       if (productError) throw productError;
       setProduct(productData);
 
-      // Then get all purchases for this product
       const { data: purchasesData, error: purchasesError } = await supabase
         .from("purchases")
         .select(`
@@ -54,7 +52,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
 
       setPurchases(purchasesData as PurchaseWithProduct[]);
       
-      // Calculate totals for completed purchases
       if (purchasesData && purchasesData.length > 0) {
         const completedPurchases = purchasesData.filter(p => p.payment_status === "completed");
         const total = completedPurchases.reduce((sum, purchase) => sum + purchase.final_price, 0);
@@ -101,7 +98,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
     );
   }
 
-  // Separate pending from completed purchases
   const completedPurchases = purchases.filter(p => p.payment_status === "completed");
   const pendingPurchases = purchases.filter(p => p.payment_status === "pending");
 
@@ -153,7 +149,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
         </div>
       </div>
 
-      {/* Pending Purchases Section */}
       {pendingPurchases.length > 0 && (
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Pendientes de Pago</h3>
@@ -177,7 +172,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {pendingPurchases.map((purchase) => {
-                  // Generate payment link for each pending purchase
                   const paymentLink = `${window.location.origin}/payment?productId=${purchase.product_id}&productType=${product?.type}&originalPrice=${purchase.original_price}&purchaseId=${purchase.id}`;
                   
                   return (
@@ -220,7 +214,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
         </div>
       )}
 
-      {/* Completed Purchases Section */}
       {completedPurchases.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <p className="text-gray-500">
@@ -320,7 +313,6 @@ export default function ProductPurchasesList({ productId, onBack }: ProductPurch
         </div>
       )}
 
-      {/* Register Client Modal */}
       <RegisterClientModal
         product={product}
         isOpen={showRegisterModal}

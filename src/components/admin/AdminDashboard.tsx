@@ -45,7 +45,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">
@@ -60,9 +59,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Tabs */}
         <div className="border-b border-gray-200 mb-6">
           <nav className="-mb-px flex space-x-8" aria-label="Tabs">
             <button
@@ -118,7 +115,6 @@ export default function AdminDashboard() {
           </nav>
         </div>
 
-        {/* Tab content */}
         <div className="bg-white shadow rounded-lg p-6">
           {renderTabContent()}
         </div>

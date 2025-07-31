@@ -34,13 +34,13 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError(null);
 
-    // Check if using the hardcoded credentials from the challenge
+    // Check if using the hardcoded credentials
     if (data.email === "encuadrado" && data.password === "enc123**456&789") {
       // Use a predefined admin account in Supabase
       // In a real app, we would validate against a proper auth system
       try {
         const { error } = await supabase.auth.signInWithPassword({
-          email: "admin@encuadrado.com", // This should be a real account in your Supabase auth
+          email: "admin@encuadrado.com", // This should be a real account in Supabase auth
           password: "admin123456",
         });
 
@@ -52,7 +52,6 @@ export default function AdminLogin() {
         setIsLoading(false);
       }
     } else {
-      // For the challenge, we only accept the hardcoded credentials
       setError("Credenciales inválidas");
       setIsLoading(false);
     }

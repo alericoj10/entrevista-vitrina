@@ -69,7 +69,6 @@ export default function EditDigitalContentForm({
     }
 
     try {
-      // Update product info
       const { error: productError } = await supabase
         .from("products")
         .update({
@@ -81,11 +80,9 @@ export default function EditDigitalContentForm({
 
       if (productError) throw productError;
 
-      // If file was changed, upload new file and update digital_contents table
       if (fileChanged && file) {
         setUploadProgress(0);
         
-        // Delete old file if it exists
         if (digitalContent.file_url) {
           const oldFilePath = digitalContent.file_url.split('/').pop();
           if (oldFilePath) {
@@ -95,12 +92,9 @@ export default function EditDigitalContentForm({
           }
         }
 
-        // Upload new file
         const fileExt = file.name.split('.').pop();
         const fileName = `${product.id}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
         const filePath = `${fileName}`;
-
-        // Create a simulated upload progress
         const uploadInterval = setInterval(() => {
           setUploadProgress(prev => {
             if (prev >= 95) {
@@ -120,12 +114,9 @@ export default function EditDigitalContentForm({
 
         if (uploadError) throw uploadError;
 
-        // Get the public URL for the file
         const { data: { publicUrl } } = supabase.storage
           .from('digital-content')
           .getPublicUrl(filePath);
-
-        // Update the digital content record
         const { error: contentError } = await supabase
           .from("digital_contents")
           .update({

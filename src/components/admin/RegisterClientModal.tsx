@@ -57,14 +57,12 @@ export default function RegisterClientModal({
     },
   });
 
-  // Check capacity for events when modal opens
   useEffect(() => {
     const checkEventCapacity = async () => {
       if (isOpen && product && product.type === "event") {
         setIsCheckingCapacity(true);
         
         try {
-          // Get event details to get capacity
           const { data: eventData, error: eventError } = await supabase
             .from("events")
             .select("capacity")
@@ -74,7 +72,6 @@ export default function RegisterClientModal({
           if (eventError) throw eventError;
           
           if (eventData && eventData.capacity) {
-            // Count existing purchases
             const { count, error: countError } = await supabase
               .from("purchases")
               .select("*", { count: "exact", head: true })
@@ -103,7 +100,6 @@ export default function RegisterClientModal({
   if (!isOpen || !product) return null;
 
   const onSubmit = async (data: ClientFormValues) => {
-    // For events, check capacity again before submission
     if (product.type === "event" && capacityInfo.remaining !== null && capacityInfo.remaining <= 0) {
       setError("Este evento está completo. No se pueden registrar más participantes.");
       return;
@@ -114,7 +110,6 @@ export default function RegisterClientModal({
     setPaymentLink(null);
 
     try {
-      // Create a pending purchase record
       const { data: purchase, error: purchaseError } = await supabase
         .from("purchases")
         .insert({
@@ -131,17 +126,12 @@ export default function RegisterClientModal({
 
       if (purchaseError) throw purchaseError;
 
-      // Generate payment link
-      // This creates a URL to the payment page with the purchase ID
       const baseUrl = window.location.origin;
       const generatedLink = `${baseUrl}/payment?productId=${product.id}&productType=${product.type}&originalPrice=${product.price}&purchaseId=${purchase.id}`;
       
       setPaymentLink(generatedLink);
 
-      // If user opted to send email
       if (data.sendEmail) {
-        // Here you would integrate with an email service
-        // For now we'll just show a message
         console.log(`Email would be sent to ${data.email} with link ${generatedLink}`);
       }
 
@@ -170,7 +160,6 @@ export default function RegisterClientModal({
     }
   };
   
-  // Show capacity warning for events
   const showCapacityWarning = product.type === "event" && 
     capacityInfo.remaining !== null && 
     capacityInfo.remaining <= 0;
