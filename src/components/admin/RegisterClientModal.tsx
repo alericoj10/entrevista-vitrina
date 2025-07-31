@@ -125,8 +125,6 @@ export default function RegisterClientModal({
           final_price: product.price,
           payment_status: "pending",
           payment_method: "cash",
-          customer_phone: data.phone || null,
-          customer_address: data.address || null,
         })
         .select()
         .single();
