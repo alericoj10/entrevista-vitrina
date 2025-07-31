@@ -1,5 +1,7 @@
 # Vitrina - Encuadrado Product Engineer
 
+Postulante: Alejandro Rico
+
 ## 🚀 Quick Start
 
 El proyecto ya se encuentra deployeado en este link: [entrevista-vitrina](https://entrevista-vitrina.vercel.app/), por lo que se facilita la revisión. Si igualmente se quisiera ejecutar el proyecto localmente, se pueden seguir los siguientes pasos:
@@ -139,8 +141,8 @@ Si esto fuera producción, implementaría en el panel de admin un dashboard con 
 **Métricas de Negocio:**
 
 - GMV (Gross Merchandise Value) por profesional
-- Average Order Value
-- Tasa de eventos sold-out
+- Average Order Value: Valor promedio de compra para cada profesional
+- Tasa de eventos sold-out: Porcentaje de eventos que no quedaron cupos disponibles
 - Métricas funnel: vistas únicas vs pagos (eficiencia landing)
 - Time to first sale (nuevos profesionales)
 
@@ -159,6 +161,7 @@ Además se podría incluir monitoreo y observabilidad de:
 - [ ] Dashboard con analytics para profesionales
 - [ ] Sistema de reviews y ratings de productos
 - [ ] Filtros y recomendaciones de productos por categoría/prefesional/ranking/etc
+- [ ] Actualizar estado de pago con clientes registrados manualmente + link de pago
 
 ### Escalabilidad
 
