@@ -20,7 +20,6 @@ export default function EventCard({ event }: EventCardProps) {
   
   return (
     <div className="bg-white overflow-hidden shadow rounded-lg flex flex-col">
-      {/* Event status badge */}
       <div className="p-5 pb-0 flex justify-between items-start">
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -37,7 +36,6 @@ export default function EventCard({ event }: EventCardProps) {
         </span>
       </div>
       
-      {/* Card content */}
       <div className="px-5 pt-4 pb-5 flex-grow flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">{event.title}</h3>
         
@@ -48,7 +46,6 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
         
         <div className="mt-2 space-y-2 text-sm text-gray-500">
-          {/* Time */}
           <div className="flex items-center">
             <svg
               className="w-4 h-4 mr-1.5 text-gray-400"
@@ -66,7 +63,6 @@ export default function EventCard({ event }: EventCardProps) {
             <span>{format(eventDate, "HH:mm")} • {eventDetails.duration_minutes} minutos</span>
           </div>
           
-          {/* Type of event (online or in-person) - without revealing details */}
           <div className="flex items-center">
             <svg
               className="w-4 h-4 mr-1.5 text-gray-400"
@@ -89,7 +85,6 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
         </div>
         
-        {/* Price and action */}
         <div className="mt-4 flex items-center justify-between">
           <div className="font-semibold">
             {event.price === 0

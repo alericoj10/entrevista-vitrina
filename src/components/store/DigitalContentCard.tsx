@@ -16,7 +16,6 @@ export default function DigitalContentCard({ content }: DigitalContentCardProps)
   const digitalDetails = content.digitalContent;
   const fileExtension = digitalDetails.file_name.split('.').pop()?.toLowerCase() || '';
   
-  // Determine file type icon and display name
   let fileTypeIcon = "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z";
   let fileTypeName = "Archivo";
   
@@ -45,7 +44,6 @@ export default function DigitalContentCard({ content }: DigitalContentCardProps)
 
   return (
     <div className="bg-white overflow-hidden shadow rounded-lg flex flex-col">
-      {/* File type badge */}
       <div className="p-5 pb-2 flex items-start justify-between">
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           {fileTypeName}
@@ -56,7 +54,6 @@ export default function DigitalContentCard({ content }: DigitalContentCardProps)
         </span>
       </div>
       
-      {/* Card content */}
       <div className="px-5 pt-2 pb-5 flex-grow flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">{content.title}</h3>
         
@@ -67,7 +64,6 @@ export default function DigitalContentCard({ content }: DigitalContentCardProps)
         </div>
         
         <div className="mt-2 space-y-2 text-sm text-gray-500">
-          {/* File name */}
           <div className="flex items-center">
             <svg
               className="w-4 h-4 mr-1.5 text-gray-400"
@@ -86,7 +82,6 @@ export default function DigitalContentCard({ content }: DigitalContentCardProps)
           </div>
         </div>
         
-        {/* Price and action */}
         <div className="mt-4 flex items-center justify-between">
           <div className="font-semibold">
             {content.price === 0

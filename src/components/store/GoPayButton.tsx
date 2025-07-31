@@ -26,24 +26,20 @@ export default function GoPayButton({
   const handleClick = () => {
     setIsLoading(true);
     
-    // Create query parameters for payment page
     const params = new URLSearchParams({
       productId,
       productType,
     });
     
-    // Add optional parameters if they exist
     if (originalPrice !== undefined) params.append('originalPrice', originalPrice.toString());
     if (discountedPrice !== undefined) params.append('discountedPrice', discountedPrice.toString());
     if (discountCode) params.append('discountCode', discountCode);
     
-    // Redirect to payment page with parameters
     setTimeout(() => {
       router.push(`/payment?${params.toString()}`);
     }, 500); // Short delay for better UX
   };
 
-  // If capacity is reached for events, disable the button and show message
   const isDisabled = isLoading || (productType === "event" && isCapacityReached);
 
   return (

@@ -34,7 +34,6 @@ export default function DiscountCodeField({
     setError(null);
 
     try {
-      // Fetch the discount code from the database
       const { data, error } = await supabase
         .from("discount_codes")
         .select("*")
@@ -47,14 +46,11 @@ export default function DiscountCodeField({
         return;
       }
 
-      // Store the applied discount
       setAppliedDiscount(data);
       
-      // Calculate the discounted price
       const discountAmount = price * (data.discount_percentage / 100);
       const discountedPrice = price - discountAmount;
       
-      // Callback to parent with the new price
       onDiscountApplied(discountedPrice, data);
       
       setIsApplying(false);

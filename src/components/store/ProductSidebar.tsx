@@ -23,27 +23,23 @@ export default function ProductSidebar({
   const [spotsLeft, setSpotsLeft] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(product.type === "event");
   const supabase = createClient();
-  
-  // Handler for when a discount is applied
+
   const handleDiscountApplied = (newPrice: number, discount: DiscountCode) => {
     setDiscountedPrice(newPrice);
     setAppliedDiscount(discount);
   };
-  
-  // Handler for when a discount is removed
+
   const handleDiscountRemoved = () => {
     setDiscountedPrice(null);
     setAppliedDiscount(null);
   };
 
-  // Check capacity for events
   useEffect(() => {
     const checkCapacity = async () => {
       if (product.type === "event" && eventCapacity) {
         setIsLoading(true);
 
         try {
-          // Count completed and pending purchases for this product
           const { count, error } = await supabase
             .from("purchases")
             .select("*", { count: "exact", head: true })
@@ -51,7 +47,6 @@ export default function ProductSidebar({
           
           if (error) throw error;
           
-          // Calculate spots left
           const spots = eventCapacity - (count || 0);
           setSpotsLeft(spots > 0 ? spots : 0);
           setIsCapacityReached(spots <= 0);
@@ -105,7 +100,6 @@ export default function ProductSidebar({
         </div>
       </div>
       
-      {/* Capacity information for events */}
       {product.type === "event" && eventCapacity && !isLoading && (
         <div className="mt-3 text-sm">
           {isCapacityReached ? (
@@ -126,7 +120,6 @@ export default function ProductSidebar({
         </div>
       )}
       
-      {/* Only show discount code field if the product is not free, upcoming, and has capacity */}
       {product.price > 0 && isUpcoming && !(product.type === "event" && isCapacityReached) && (
         <DiscountCodeField
           productId={product.id}
