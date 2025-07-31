@@ -67,7 +67,7 @@ yarn dev
 Elegí usar React con Typescript como principales tecnologías de frontend, ya que:
 
 - Son tecnologías maduras y bien mantenidas
-- Next.js permite el desarrollo de una SPA + SSR, lo que me parece ideal en este contexto. Implementé la pagina de admin como SPA, ya que el dinamismo y UX son esenciales para esta pagina, y la de tienda con SSR, ya que permite buena performance y routing para: SEO, generación de links compartibles y descubribles desde los motores de búsqueda.
+- Next.js permite el desarrollo de una SPA + SSR, lo que me parece ideal en este contexto. Implementé la pagina de admin como SPA, ya que permite interactividad dinamica y UX que el usuario asume, y la de tienda con SSR, ya que permite buena performance y uso de routing para: SEO, generación de links compartibles y descubribles desde los motores de búsqueda, pagos seguros y excelente performance.
 - Permiten una rápida iteración, fuerzan un buen orden del código, facilitan el mantenimiento y proveen posibilidades de escalabilidad en el futuro.
 - Otro beneficio de Next.js es que permite deployear integradamente en Vercel.
 - Typescript para incluir seguridad en el tipado del código, puede ayudar a prevenir errores sobretodo cuando se desarrolla rápido y el entorno exige rapidez.
@@ -76,7 +76,7 @@ Elegí usar React con Typescript como principales tecnologías de frontend, ya q
 ##### 1.2 Supabase Backend (SQL)
 
 - Decidí usar base de datos SQL ya que por la naturaleza del producto, existen entidades de datos que requieren ser relacionadas entre si y ayuda a mantener estructuras predeterminadas aún con posibilidad de flexibilidad.
-- Otras razones de usar SQL: consistencia ACID para transacciones y pagos, facilidad de queries complejas y permiten diseñar el schema pensando en escalabilidad futura con índices y relaciones optimizadas.
+- Otras razones de usar SQL: El e-commerce requiere consistencia ACID para transacciones de pagos e inventario, facilidad de hacer queries complejas de analytics y permiten diseñar el schema pensando en escalabilidad futura con índices y relaciones optimizadas.
 - Supabase es una excelente tecnología de backend como servicio, que permite levantar un backend completo y robusto en poco tiempo: Incluye autenticación, base de datos, storage, funciones, webhooks, etc.
 - Escala super bien y facilita la posterior migración a una app in-house de backend de ser necesario.
 
@@ -85,7 +85,8 @@ Elegí usar React con Typescript como principales tecnologías de frontend, ya q
 El proyecto es un monolito "modularizado", esto tiene varios beneficios:
 
 - Facilita la iteración y mantenimiento del código. unificando infraestructura, dependencias y código.
-- Facilita la escalabilidad del proyecto.
+- Un deploy, una base de datos y un solo entorno de desarrollo para un equipo pequeño.
+- Facilita la escalabilidad del proyecto en el futuro, permitiendo velocidad ahora.
 - Mantiene la separación clara entre módulos permitiendo evolucionar a servicios separados cuando el volumen lo justifique.
 
 ## Funcionalidades Implementadas
